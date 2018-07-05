@@ -25,8 +25,10 @@ public class home extends AppCompatActivity {
     //location
     private LocationManager locationManager;
     Location location;
+
     private LocationListener locationListener;
-    String mloc=new String();
+    String mloc=new String("nill_bro");
+
 
     //////////////
 
@@ -50,6 +52,7 @@ public class home extends AppCompatActivity {
         return super.onCreateOptionsMenu(menu);
     }
 
+    @RequiresApi(api = Build.VERSION_CODES.M)
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()) {
@@ -64,55 +67,8 @@ public class home extends AppCompatActivity {
 
     }
 
+    @RequiresApi(api = Build.VERSION_CODES.M)
     private void callemergency() {
-        ////////////////////location sending
-        locationManager = (LocationManager) getSystemService(LOCATION_SERVICE);
-        locationListener = new LocationListener() {
-            @Override
-            public void onLocationChanged(Location location) {
-
-
-                mloc="vs "+location.getLatitude()+"   "+location.getLongitude();
-                Toast.makeText(home.this, "reached1", Toast.LENGTH_SHORT).show();
-
-
-            }
-
-            @Override
-            public void onStatusChanged(String provider, int status, Bundle extras) {
-
-            }
-
-            @Override
-            public void onProviderEnabled(String provider) {
-
-            }
-
-            @Override
-            public void onProviderDisabled(String provider) {
-
-            }
-        };
-        if (ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
-            // TODO: Consider calling
-            requestPermissions(new String[]{
-                    Manifest.permission.ACCESS_FINE_LOCATION,Manifest.permission.ACCESS_COARSE_LOCATION,Manifest.permission.INTERNET
-            },10);
-            //    ActivityCompat#requestPermissions
-            // here to request the missing permissions, and then overriding
-            //   public void onRequestPermissionsResult(int requestCode, String[] permissions,
-            //                                          int[] grantResults)
-            // to handle the case where the user grants the permission. See the documentation
-            // for ActivityCompat#requestPermissions for more details.
-            return;
-        }
-        else{
-
-
-            locationManager.requestLocationUpdates("gps", 500, 50, locationListener);
-            Toast.makeText(this, "loc updated", Toast.LENGTH_SHORT).show();
-
-        }
 
         ///////////////////////////////////////////
         sendSms();
@@ -145,10 +101,66 @@ public class home extends AppCompatActivity {
 
     @RequiresApi(api = Build.VERSION_CODES.M)
     private void sendSms() {
+        ////////////////////location sending
+        locationManager = (LocationManager) getSystemService(LOCATION_SERVICE);
+        locationListener = new LocationListener() {
+            @Override
+            public void onLocationChanged(Location location) {
 
 
+                mloc="vs "+location.getLatitude()+"   "+location.getLongitude();
+                Toast.makeText(home.this, "loc updated", Toast.LENGTH_SHORT).show();
+
+
+            }
+
+            @Override
+            public void onStatusChanged(String provider, int status, Bundle extras) {
+                Toast.makeText(home.this, "e1", Toast.LENGTH_SHORT).show();
+
+            }
+
+            @Override
+            public void onProviderEnabled(String provider) {
+                Toast.makeText(home.this, "e2", Toast.LENGTH_SHORT).show();
+
+            }
+
+            @Override
+            public void onProviderDisabled(String provider) {
+                Toast.makeText(home.this, "e3", Toast.LENGTH_SHORT).show();
+
+            }
+        };
+        if (ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
+            // TODO: Consider calling
+            requestPermissions(new String[]{
+                    Manifest.permission.ACCESS_FINE_LOCATION,Manifest.permission.ACCESS_COARSE_LOCATION,Manifest.permission.INTERNET
+            },10);
+            //    ActivityCompat#requestPermissions
+            // here to request the missing permissions, and then overriding
+            //   public void onRequestPermissionsResult(int requestCode, String[] permissions,
+            //                                          int[] grantResults)
+            // to handle the case where the user grants the permission. See the documentation
+            // for ActivityCompat#requestPermissions for more details.
+            return;
+        }
+        else{
+
+
+            //locationManager.requestLocationUpdates("gps", 2000, 0, locationListener);
+            locationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER, 5000, 0, locationListener);
+            location = locationManager.getLastKnownLocation(LocationManager.GPS_PROVIDER);
+            mloc="vs "+location.getLatitude()+"   "+location.getLongitude();
+            //Toast.makeText(this, "loc updated", Toast.LENGTH_SHORT).show();
+
+        }
+
+        ///////////////////
         SmsManager smsManager = SmsManager.getDefault();
+
         Toast.makeText(this, "Your Cordintaes\n"+mloc+"\nreach me", Toast.LENGTH_SHORT).show();
+
         smsManager.sendTextMessage("9731748979", null, "i'm in emergency\n"+mloc+"\nreach me", null, null);
         Toast.makeText(this, "msg sent", Toast.LENGTH_SHORT).show();
     }
