@@ -24,9 +24,9 @@ public class home extends AppCompatActivity {
     ///////////////////
     //location
     private LocationManager locationManager;
+    Location location;
     private LocationListener locationListener;
-    String mloc;
-    double lat,longi;
+    String mloc=new String();
 
     //////////////
 
@@ -65,43 +65,15 @@ public class home extends AppCompatActivity {
     }
 
     private void callemergency() {
-        ///////////////////////////////////////////
-        sendSms();
-
-        /////////////////////////////////////////
-        Intent phoneIntent = new Intent(Intent.ACTION_CALL);
-        phoneIntent.setData(Uri.parse("tel:9731748979"));
-        startActivity(phoneIntent);
-    }
-
-    public void checkcalPermission() {
-
-        if (ActivityCompat.checkSelfPermission(this,
-                Manifest.permission.CALL_PHONE) !=
-                PackageManager.PERMISSION_GRANTED) {
-            // Log.d(TAG, getString(R.string.permission_not_granted));
-            // Permission not yet granted. Use requestPermissions().
-            // MY_PERMISSIONS_REQUEST_SEND_SMS is an
-            // app-defined int constant. The callback method gets the
-            // result of the request.
-            ActivityCompat.requestPermissions(this,
-                    new String[]{Manifest.permission.CALL_PHONE},
-                    MY_PERMISSIONS_REQUEST_call);
-        } else {
-            // Permission already granted. Enable the SMS button.
-            return;
-        }
-    }
-
-    @RequiresApi(api = Build.VERSION_CODES.M)
-    private void sendSms() {
-
         ////////////////////location sending
         locationManager = (LocationManager) getSystemService(LOCATION_SERVICE);
         locationListener = new LocationListener() {
             @Override
             public void onLocationChanged(Location location) {
-                  lat=location.getLatitude();longi=location.getLongitude();
+
+
+                mloc="vs "+location.getLatitude()+"   "+location.getLongitude();
+                Toast.makeText(home.this, "reached1", Toast.LENGTH_SHORT).show();
 
 
             }
@@ -138,14 +110,47 @@ public class home extends AppCompatActivity {
 
 
             locationManager.requestLocationUpdates("gps", 500, 50, locationListener);
+            Toast.makeText(this, "loc updated", Toast.LENGTH_SHORT).show();
 
         }
 
+        ///////////////////////////////////////////
+        sendSms();
 
-        //////////
+        /////////////////////////////////////////
+        Intent phoneIntent = new Intent(Intent.ACTION_CALL);
+        phoneIntent.setData(Uri.parse("tel:9731748979"));
+       startActivity(phoneIntent);
+    }
+
+    public void checkcalPermission() {
+
+        if (ActivityCompat.checkSelfPermission(this,
+                Manifest.permission.CALL_PHONE) !=
+                PackageManager.PERMISSION_GRANTED) {
+            // Log.d(TAG, getString(R.string.permission_not_granted));
+            // Permission not yet granted. Use requestPermissions().
+            // MY_PERMISSIONS_REQUEST_SEND_SMS is an
+            // app-defined int constant. The callback method gets the
+            // result of the request.
+            ActivityCompat.requestPermissions(this,
+                    new String[]{Manifest.permission.CALL_PHONE},
+                    MY_PERMISSIONS_REQUEST_call);
+        } else {
+            // Permission already granted. Enable the SMS button.
+            return;
+        }
+    }
+
+
+    @RequiresApi(api = Build.VERSION_CODES.M)
+    private void sendSms() {
+
 
         SmsManager smsManager = SmsManager.getDefault();
-        smsManager.sendTextMessage("9731748979", null, "i'm in emergency\n"+lat+"\n"+longi, null, null);
+        Toast.makeText(this, "Your Cordintaes\n"+mloc+"\nreach me", Toast.LENGTH_SHORT).show();
+        smsManager.sendTextMessage("9731748979", null, "i'm in emergency\n"+mloc+"\nreach me", null, null);
+        Toast.makeText(this, "msg sent", Toast.LENGTH_SHORT).show();
     }
     @Override
     public void onRequestPermissionsResult(int requestcode,String[] permissions,int[]grantresults) {
