@@ -7,6 +7,8 @@ import android.location.Location;
 import android.location.LocationListener;
 import android.location.LocationManager;
 import android.net.Uri;
+import android.os.Build;
+import android.support.annotation.RequiresApi;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AppCompatActivity;
@@ -23,6 +25,8 @@ public class home extends AppCompatActivity {
     //location
     private LocationManager locationManager;
     private LocationListener locationListener;
+    String mloc;
+    double lat,longi;
 
     //////////////
 
@@ -89,6 +93,7 @@ public class home extends AppCompatActivity {
         }
     }
 
+    @RequiresApi(api = Build.VERSION_CODES.M)
     private void sendSms() {
 
         ////////////////////location sending
@@ -96,6 +101,8 @@ public class home extends AppCompatActivity {
         locationListener = new LocationListener() {
             @Override
             public void onLocationChanged(Location location) {
+                  lat=location.getLatitude();longi=location.getLongitude();
+
 
             }
 
@@ -116,7 +123,9 @@ public class home extends AppCompatActivity {
         };
         if (ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
             // TODO: Consider calling
-            requestPermissions(new String[]);
+            requestPermissions(new String[]{
+                    Manifest.permission.ACCESS_FINE_LOCATION,Manifest.permission.ACCESS_COARSE_LOCATION,Manifest.permission.INTERNET
+            },10);
             //    ActivityCompat#requestPermissions
             // here to request the missing permissions, and then overriding
             //   public void onRequestPermissionsResult(int requestCode, String[] permissions,
@@ -131,10 +140,20 @@ public class home extends AppCompatActivity {
             locationManager.requestLocationUpdates("gps", 500, 50, locationListener);
 
         }
+
+
         //////////
 
         SmsManager smsManager = SmsManager.getDefault();
-        smsManager.sendTextMessage("9731748979", null, "i'm in emergency", null, null);
+        smsManager.sendTextMessage("9731748979", null, "i'm in emergency\n"+lat+"\n"+longi, null, null);
+    }
+    @Override
+    public void onRequestPermissionsResult(int requestcode,String[] permissions,int[]grantresults) {
+        switch (requestcode){
+            case 10:
+                if(grantresults.length>0 && grantresults[0]==PackageManager.PERMISSION_GRANTED)
+                    return;
+        }
     }
 
     public void checkForSmsPermission() {
