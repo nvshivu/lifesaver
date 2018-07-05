@@ -17,7 +17,7 @@ import android.widget.Toast;
 import java.util.zip.Inflater;
 
 public class MainActivity extends AppCompatActivity {
-    Button forward;
+    Button forward,editeno;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -38,6 +38,7 @@ public class MainActivity extends AppCompatActivity {
          forward=findViewById(R.id.button);
 
 
+
         forward.setOnClickListener(new View.OnClickListener() {
 
             @Override
@@ -48,6 +49,13 @@ public class MainActivity extends AppCompatActivity {
 
 
 
+            }
+        });
+        editeno=findViewById(R.id.edit_emergency_number);
+        editeno.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                startActivity(new Intent(MainActivity.this,editemergency.class));
             }
         });
     }

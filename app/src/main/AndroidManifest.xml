@@ -3,9 +3,9 @@
     package="com.example.vinay.lifesaver">
 
     <uses-permission android:name="android.permission.SEND_SMS" />
-
     <uses-permission android:name="android.permission.CALL_PHONE" />
-
+    <uses-permission android:name="android.permission.READ_CONTACTS" />
+    <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
 
     <application
         android:allowBackup="true"
@@ -21,7 +21,9 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-        <activity android:name=".home"></activity>
+        <activity android:name=".home" />
+        <activity android:name=".editemergency" />
+        <activity android:name=".MyLocationListener"></activity>
     </application>
 
 </manifest>

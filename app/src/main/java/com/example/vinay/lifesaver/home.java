@@ -3,6 +3,9 @@ package com.example.vinay.lifesaver;
 import android.Manifest;
 import android.content.Intent;
 import android.content.pm.PackageManager;
+import android.location.Location;
+import android.location.LocationListener;
+import android.location.LocationManager;
 import android.net.Uri;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.content.ContextCompat;
@@ -15,7 +18,13 @@ import android.widget.Toast;
 
 public class home extends AppCompatActivity {
     private static final int MY_PERMISSIONS_REQUEST_SEND_SMS = 1;
-    private static final int MY_PERMISSIONS_REQUEST_call=1;
+    private static final int MY_PERMISSIONS_REQUEST_call = 1;
+    ///////////////////
+    //location
+    private LocationManager locationManager;
+    private LocationListener locationListener;
+
+    //////////////
 
     public home() {
     }
@@ -30,20 +39,21 @@ public class home extends AppCompatActivity {
 
 
     }
+
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
-        getMenuInflater().inflate(R.menu.mymenu,menu);
+        getMenuInflater().inflate(R.menu.mymenu, menu);
         return super.onCreateOptionsMenu(menu);
     }
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
-        switch (item.getItemId()){
+        switch (item.getItemId()) {
             case R.id.emergency: {
                 Toast.makeText(getApplicationContext(), "you clicked" + item.getTitle(), Toast.LENGTH_LONG).show();
                 callemergency();
             }
-                break;
+            break;
 
         }
         return super.onOptionsItemSelected(item);
@@ -59,6 +69,7 @@ public class home extends AppCompatActivity {
         phoneIntent.setData(Uri.parse("tel:9731748979"));
         startActivity(phoneIntent);
     }
+
     public void checkcalPermission() {
 
         if (ActivityCompat.checkSelfPermission(this,
@@ -77,7 +88,50 @@ public class home extends AppCompatActivity {
             return;
         }
     }
-    private void sendSms(){
+
+    private void sendSms() {
+
+        ////////////////////location sending
+        locationManager = (LocationManager) getSystemService(LOCATION_SERVICE);
+        locationListener = new LocationListener() {
+            @Override
+            public void onLocationChanged(Location location) {
+
+            }
+
+            @Override
+            public void onStatusChanged(String provider, int status, Bundle extras) {
+
+            }
+
+            @Override
+            public void onProviderEnabled(String provider) {
+
+            }
+
+            @Override
+            public void onProviderDisabled(String provider) {
+
+            }
+        };
+        if (ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
+            // TODO: Consider calling
+            requestPermissions(new String[]);
+            //    ActivityCompat#requestPermissions
+            // here to request the missing permissions, and then overriding
+            //   public void onRequestPermissionsResult(int requestCode, String[] permissions,
+            //                                          int[] grantResults)
+            // to handle the case where the user grants the permission. See the documentation
+            // for ActivityCompat#requestPermissions for more details.
+            return;
+        }
+        else{
+
+
+            locationManager.requestLocationUpdates("gps", 500, 50, locationListener);
+
+        }
+        //////////
 
         SmsManager smsManager = SmsManager.getDefault();
         smsManager.sendTextMessage("9731748979", null, "i'm in emergency", null, null);
