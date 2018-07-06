@@ -13,11 +13,14 @@ import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
 import android.support.annotation.RequiresApi;
+import android.support.design.widget.BottomNavigationView;
+import android.support.design.widget.NavigationView;
 import android.support.v4.app.ActivityCompat;
 import android.telephony.SmsManager;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.Button;
 import android.widget.ExpandableListView;
 import android.widget.SearchView;
 import android.widget.TextView;
@@ -49,6 +52,10 @@ private static final int MY_PERMISSIONS_REQUEST_SEND_SMS = 1;
     private LocationListener locationListener;
     String mloc=new String("nill_bro");
 
+    //
+     NavigationView navigation;
+     Button button;
+
 
     //////////////
     @Override
@@ -59,7 +66,7 @@ private static final int MY_PERMISSIONS_REQUEST_SEND_SMS = 1;
         SearchManager searchManager = (SearchManager) getSystemService(Context.SEARCH_SERVICE);
         search = (SearchView) findViewById(R.id.search);
         search.setSearchableInfo(searchManager.getSearchableInfo(getComponentName()));
-        search.setIconifiedByDefault(false);
+        search.setIconifiedByDefault(true);
         search.setOnQueryTextListener(this);
         search.setOnCloseListener(this);
 
@@ -111,6 +118,24 @@ private static final int MY_PERMISSIONS_REQUEST_SEND_SMS = 1;
         checkcalPermission();
         checkForSmsPermission();
         //////////
+
+        button=findViewById(R.id.ebt);
+
+        button.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                ///////////////////////////////////////////
+                sendSms();
+
+                /////////////////////////////////////////
+                Intent phoneIntent = new Intent(Intent.ACTION_CALL);
+                phoneIntent.setData(Uri.parse("tel:9731748979"));
+                startActivity(phoneIntent);
+
+            }
+        });
+
+
 
     }
 
@@ -231,39 +256,9 @@ private static final int MY_PERMISSIONS_REQUEST_SEND_SMS = 1;
         expandAll();
         return false;
     }
-    /////////////
-    @Override
-    public boolean onCreateOptionsMenu(Menu menu) {
-        getMenuInflater().inflate(R.menu.mymenu, menu);
-        return super.onCreateOptionsMenu(menu);
-    }
 
-    @RequiresApi(api = Build.VERSION_CODES.M)
-    @Override
-    public boolean onOptionsItemSelected(MenuItem item) {
-        switch (item.getItemId()) {
-            case R.id.emergency: {
-                Toast.makeText(getApplicationContext(), "you clicked" + item.getTitle(), Toast.LENGTH_LONG).show();
-                callemergency();
-            }
-            break;
 
-        }
-        return super.onOptionsItemSelected(item);
 
-    }
-
-    @RequiresApi(api = Build.VERSION_CODES.M)
-    private void callemergency() {
-
-        ///////////////////////////////////////////
-        sendSms();
-
-        /////////////////////////////////////////
-        Intent phoneIntent = new Intent(Intent.ACTION_CALL);
-        phoneIntent.setData(Uri.parse("tel:9731748979"));
-        startActivity(phoneIntent);
-    }
 
     public void checkcalPermission() {
 
